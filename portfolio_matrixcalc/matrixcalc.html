@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cute+Font&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="./img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="matrix.css">
+    <title>Chaenny's Matrix</title>
+</head>
+<body>
+    <!--팝업창-->
+    <div class="bigFrame">
+        <div class="dinosaur_img"></div>
+        <div id="pop_up_layer" class="pop_up_layer">
+            <span></span>
+            <button class="pop_up_button"></button>
+        </div>
+        <!--메인 타이틀-->
+        <div class="matrix_title">MATRIX CALCULATOR</div>
+        <div class="matrix_title2">MATRIX CALCULATOR</div>
+        <!--버블 3개-->
+            <div class="bubble_box">
+                <div id="myBubble1" class="myBubble1 myBubble"></div>
+                <div id="myBubble2" class="myBubble2 myBubble"></div>
+                <div id="myBubble3" class="myBubble3 myBubble"></div>
+            </div>
+        <!--A행렬-->
+        <div class="a_title">A</div>
+        <span class="a_row_title row_col_title">row</span><input type="number" min="1" max="5" tabindex="100" id="a_row" class="a_row">
+        <span class="a_col_title row_col_title">column</span><input type="number" min="1" max="5" tabindex="200" id="a_col" class="a_col">
+        <button id="make_a" class="make_a myBtn"></button>
+        <!--B행렬-->
+        <div class="b_title">B</div>
+        <span class="b_row_title row_col_title">row</span><input type="number" min="1" max="5" tabindex="300" id="b_row" class="b_row">
+        <span class="b_col_title row_col_title">column</span><input type="number" min="1" max="5" tabindex="400" id="b_col" class="b_col">
+        <button id="make_b" class="make_b myBtn"></button>
+        <!--랜덤,리셋,+ - x 버튼-->
+        <button id="randomBtn" class="randomBtn myBtn"></button>
+        <button id="resetBtn" class="resetBtn myBtn"></button>
+        <button id="plusBtn" class="plusBtn myBtn"></button>
+        <button id="minusBtn" class="minusBtn myBtn"></button>
+        <button id="multBtn" class="multBtn myBtn"></button>
+        <!--A,B행렬 큰박스-->
+        <div id="matrix_a" class="matrix_a"></div>
+        <div id="matrix_b" class="matrix_b"></div>
+        <!--결과값 제목, 큰박스-->
+        <div id="result_title" class="result_title">RESULT</div>
+        <div id="matrix_result" class="matrix_result"></div>
+    </div>
+    <script>
+        let a_row = document.getElementById("a_row").value;
+        let a_col = document.getElementById("a_col").value;
+        let b_row = document.getElementById("b_row").value;
+        let b_col = document.getElementById("b_col").value;
+        let make_a = document.getElementById("make_a");
+        let make_b = document.getElementById("make_b");
+        let randomBtn = document.getElementById("randomBtn");
+        let resetBtn = document.getElementById("resetBtn");
+        let plusBtn = document.getElementById("plusBtn");
+        let minusBtn = document.getElementById("minusBtn");
+        let multBtn = document.getElementById("multBtn");
+        let matrix_result = document.getElementById("matrix_result");
+
+        // 팝업창 레이어 함수
+        function check_validation(innerhtml){
+            $('.pop_up_layer').css('display','block');
+            $('.pop_up_layer > span').html(innerhtml);
+        }
+        
+        // A행렬 박스 만들기
+        $(".make_a").on("click", function(){
+            if($("#a_row").val() =="" || $("#a_col").val()=="" || $("#a_row").val() == 0 || $("#a_col").val() == 0){
+                check_validation("A의 행과 열을 입력해주세요.");
+            }
+            if($("#a_row").val() >= 6 || $("#a_col").val() >= 6) {
+                check_validation("1~5까지의 숫자만 입력 가능합니다.");
+                $("#a_row").val() = 0;
+                $("#a_col").val() = 0;
+            }
+            matrix_a.innerHTML = "";
+            matrix_a.style.width = ($("#a_col").val()*69) + "px";
+            for(let i=0; i < ($("#a_row").val())*($("#a_col").val()); i++) {
+                matrix_a.innerHTML += '<input class="matrix_mini_A matrix_mini_A'+i+'"type="number">';
+            }
+        });
+
+        // B행렬 박스 만들기
+        $(".make_b").on("click", function(){
+            //console.log($("#b_row").val());
+            if($("#b_row").val() == "" || $("#b_col").val() == "" || $("#b_row").val() == 0 || $("#b_col").val() == 0){
+                check_validation("B의 행과 열을 입력해주세요.");
+            }
+            if($("#b_row").val() >= 6 || $("#b_col").val() >= 6) {
+                check_validation("1~5까지의 숫자만 입력 가능합니다.");
+                $("#b_row").val() = 0;
+                $("#b_col").val() = 0;
+            }
+            matrix_b.innerHTML = "";
+            matrix_b.style.width = ($("#b_col").val()*69) + "px";
+            for(let i=0; i < ($("#b_row").val())*($("#b_col").val()); i++) {
+                matrix_b.innerHTML += '<input class="matrix_mini_B matrix_mini_B'+i+'" type="number">';
+            }
+        });
+
+        // 플러스 버튼을 눌렀을 때 박스 만들기 + 더한 결과값 나오기
+        $(".plusBtn").on("click", function(){
+            let matrix_mini_A = document.querySelectorAll(".matrix_mini_A");
+            let matrix_mini_B = document.querySelectorAll(".matrix_mini_B");
+            matrix_result.innerHTML = "";
+            matrix_result.style.width = ($("#a_col").val()*69) + "px";
+            if($("#a_row").val() == $("#b_row").val() && $("#a_col").val() == $("#b_col").val()) {
+                for(let i=0; i < ($("#a_row").val())*($("#b_col").val()); i++) {
+                    matrix_result.innerHTML += '<div id="matrix_mini_resultBox" class="matrix_mini_resultBox">'+ (parseInt(matrix_mini_A[i].value) + parseInt(matrix_mini_B[i].value)) +'</div>';
+                } 
+                location.href='#result_title';
+            } else {
+                check_validation("A,B행렬의 값이 같아야 합니다.");
+                //alert("A,B행렬의 크기는 같아야 합니다.");
+            }
+        });
+        
+
+        // 마이너스 버튼을 눌렀을 때 박스 만들기 + 뺀 결과값 나오기
+        $(".minusBtn").on("click", function(){
+            let matrix_mini_A = document.querySelectorAll(".matrix_mini_A");
+            let matrix_mini_B = document.querySelectorAll(".matrix_mini_B");
+            matrix_result.innerHTML = "";
+            matrix_result.style.width = ($("#a_col").val()*69) + "px";
+            if($("#a_row").val() == $("#b_row").val() && $("#a_col").val() == $("#b_col").val()) {
+                for(let i=0; i < ($("#a_row").val())*($("#b_col").val()); i++) {
+                    matrix_result.innerHTML += '<div id="matrix_mini_resultBox" class="matrix_mini_resultBox">'+ (parseInt(matrix_mini_A[i].value) - parseInt(matrix_mini_B[i].value)) +'</div>';
+                }
+                location.href='#result_title';
+            } else {
+                check_validation("A,B행렬의 값이 같아야 합니다.");
+            }
+        });
+
+        // 곱하기 버튼을 눌렀을 때 박스 만들기 + 곱한 결과값 나오기 
+        $(".multBtn").on("click", function(){
+            let matrix_mini_A = document.querySelectorAll(".matrix_mini_A");
+            let matrix_mini_B = document.querySelectorAll(".matrix_mini_B");
+            matrix_result.innerHTML = "";
+            matrix_result.style.width = ($("#b_col").val()*69) + "px";
+            let mult_acol = $("#a_col").val(); // 변수선언해서 다 담기 (A,B행렬 다)
+            let mult_arow = $("#a_row").val();
+            let mult_bcol = $("#b_col").val();
+            let mult_brow = $("#b_row").val();
+            let regexp = /\B(?=(\d{3})+(?!\d))/g; // 정규식으로 콤마찍기
+
+            let myTemp = []; // 담는용
+            let myTempArray = [];
+            let a_matrix_temp = []; // A 2차원 배열
+            let b_matrix_temp = []; // B 2차원 배열
+            let result_temp = []; // 결과용
+            let tempNum = 0;
+
+            for(let i=0; i<matrix_mini_A.length; i++) {
+                myTemp.push(matrix_mini_A[i].value); 
+                if(i%mult_acol == mult_acol-1) { // i%a_col == a_col-1          
+                    a_matrix_temp.push(myTemp);
+                    myTemp=[];
+                    
+                }    
+            }
+                
+            for(let i=0; i<matrix_mini_B.length; i++) {
+                myTemp.push(matrix_mini_B[i].value);
+                
+                if(i%mult_bcol == mult_bcol-1) {
+                    b_matrix_temp.push(myTemp);
+                    myTemp=[];
+                }
+            }
+            for(z=0; z<a_matrix_temp.length; z++) {
+                for(j=0; j<b_matrix_temp[0].length; j++) {
+                    for(i=0; i<a_matrix_temp[0].length; i++) {
+                    tempNum += parseInt(a_matrix_temp[z][i]) * parseInt(b_matrix_temp[i][j]);
+                        console.log(tempNum);
+                    }
+                    result_temp.push(tempNum);
+                    tempNum = 0;
+                }
+            }
+            if(mult_acol == mult_brow){
+                for(let i=0; i < ($("#a_row").val())*($("#b_col").val()); i++) {
+                    matrix_result.innerHTML += '<div id="matrix_mini_resultBox" class="matrix_mini_resultBox">' + result_temp[i].toString().replace(regexp,',') + '</div>';
+                }
+                location.href='#result_title';
+            } else {
+                check_validation("A열과 B행의 값이 같아야 합니다.");
+            }
+        });
+
+        // A,B행렬 랜덤값 만들기
+        $(".randomBtn").on("click", function(){
+            let matrix_mini_A = document.querySelectorAll(".matrix_mini_A");
+            for(let i=0; i<matrix_mini_A.length; i++) {
+                matrix_mini_A[i].value = Math.floor(Math.random()*(101+1));
+            }
+        });
+        
+        $(".randomBtn").on("click", function(){
+            let matrix_mini_B = document.querySelectorAll(".matrix_mini_B");
+            for(let i=0; i<matrix_mini_B.length; i++) {
+                matrix_mini_B[i].value = Math.floor(Math.random()*(101+1));
+            }
+        });
+
+        // 리셋버튼 누르면 두 행렬을 비우기
+        $(".resetBtn").on("click", function(){
+            let matrix_mini_A = document.querySelectorAll(".matrix_mini_A");
+            for(let i=0; i<matrix_mini_A.length; i++) {
+                matrix_mini_A[i].value = "";
+            }
+        });
+
+        $(".resetBtn").on("click", function(){
+            let matrix_mini_B = document.querySelectorAll(".matrix_mini_B");
+            for(let i=0; i<matrix_mini_B.length; i++) {
+                matrix_mini_B[i].value = "";
+            }
+        });
+
+        // 버블 하나씩 나타나게 하기
+        let count = 0;
+
+        setInterval(function(){
+            count++;
+            switch(count){
+                case 1:
+                    $(".myBubble1").css("opacity","1");
+                    break;
+                case 2:
+                    $(".myBubble2").css("opacity","1");
+                    break;
+                case 3:
+                    $(".myBubble3").css("opacity","1");
+                    break;
+                case 4:
+                    $(".myBubble").css("opacity","0");
+                    count = 0;
+                    break;
+            };
+        } ,1000);
+        
+        // 팝업창 버튼 누르면 팝업창 닫기
+        $('.pop_up_layer > button').on('click',function(){
+            $('.pop_up_layer').css('display','none');
+        });
+    </script>
+</body>
+</html>
